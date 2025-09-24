@@ -1,0 +1,15 @@
+
+@use "./_variaveis" as *;
+
+// Container principal do Quadro
+.cabecalho {
+  max-width: 100vw;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  background-color: $primary;
+  color:$text-light;
+  font-family: $font-primary;
+  font-size: $font-cabecalho;
+
+}

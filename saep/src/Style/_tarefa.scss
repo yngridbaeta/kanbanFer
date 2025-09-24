@@ -1,0 +1,170 @@
+.tarefa {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 14px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+
+  &:active {
+    cursor: grabbing;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.03);
+    z-index: 10;
+  }
+
+  header {
+    margin-bottom: 12px;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #222;
+      margin: 0;
+      word-break: break-word;
+    }
+  }
+
+  dl {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    dt {
+      font-weight: 600;
+      color: #555;
+      flex: 0 0 80px;
+    }
+
+    dd {
+      margin: 0;
+      color: #333;
+      flex: 1;
+      word-break: break-word;
+    }
+  }
+
+  // Indicador de status colorido na borda esquerda
+  &.status-A-fazer {
+    border-left: 5px solid #e74c3c; // vermelho para "A fazer"
+  }
+
+  &.status-Fazendo {
+    border-left: 5px solid #f39c12; // amarelo para "Fazendo"
+  }
+
+  &.status-Pronto {
+    border-left: 5px solid #27ae60; // verde para "Pronto"
+  }
+
+  .tarefa__acoes {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    button {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1.5px solid #666;
+      background-color: transparent;
+      color: #666;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+
+      &:hover {
+        background-color: #666;
+        color: #fff;
+      }
+
+      &:focus {
+        outline: 2px solid #666;
+        outline-offset: 2px;
+      }
+
+      &[aria-label="Excluir tarefa"] {
+        border-color: #e74c3c;
+        color: #e74c3c;
+
+        &:hover {
+          background-color: #e74c3c;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .tarefa__status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    label {
+      font-weight: 600;
+      color: #444;
+      min-width: 50px;
+    }
+
+    select {
+      flex-grow: 1;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1.5px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: #27ae60;
+        outline: none;
+      }
+    }
+
+    button {
+      padding: 8px 14px;
+      border: none;
+      background-color: #27ae60;
+      border-radius: 4px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #1e8449;
+      }
+
+      &:focus {
+        outline: 2px solid #1e8449;
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  // Responsividade para telas pequenas
+  @media (max-width: 480px) {
+    dl {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tarefa__acoes {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    .tarefa__status {
+      flex-direction: column;
+
+      select,
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
