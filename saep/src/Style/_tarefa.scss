@@ -1,35 +1,58 @@
 .tarefa {
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  margin-bottom: 14px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 16px;
   cursor: grab;
   user-select: none;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
+  position: relative;
+  border-left: 6px solid transparent;
+
+  &.status-a\ fazer {
+    border-left-color: #ffb6b9; // Rosa claro
+  }
+
+  &.status-fazendo {
+    border-left-color: #fdd365; // Amarelo pastel
+  }
+
+  &.status-pronto {
+    border-left-color: #c1f0dc; // Verde claro
+  }
 
   &:active {
     cursor: grabbing;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
     z-index: 10;
   }
 
+  .drag-handle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #aaa;
+  }
+
   header {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 
     h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #222;
-      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+      margin-left: 24px; // deixa espaço para a alça de arrasto
       word-break: break-word;
     }
   }
 
   dl {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+    gap: 10px;
     margin-bottom: 16px;
 
     dt {
@@ -46,19 +69,6 @@
     }
   }
 
-  // Indicador de status colorido na borda esquerda
-  &.status-A-fazer {
-    border-left: 5px solid #e74c3c; // vermelho para "A fazer"
-  }
-
-  &.status-Fazendo {
-    border-left: 5px solid #f39c12; // amarelo para "Fazendo"
-  }
-
-  &.status-Pronto {
-    border-left: 5px solid #27ae60; // verde para "Pronto"
-  }
-
   .tarefa__acoes {
     display: flex;
     gap: 12px;
@@ -67,32 +77,29 @@
     button {
       flex: 1;
       padding: 8px 12px;
-      border-radius: 4px;
-      border: 1.5px solid #666;
-      background-color: transparent;
-      color: #666;
+      border-radius: 6px;
       font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
       cursor: pointer;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease;
+    }
+
+    button:first-of-type {
+      background-color: #b385b7; 
+      color: #fff;
 
       &:hover {
-        background-color: #666;
-        color: #fff;
+        background-color: #7053a6;
       }
+    }
 
-      &:focus {
-        outline: 2px solid #666;
-        outline-offset: 2px;
-      }
+    button:last-of-type {
+      background-color: #b385b7 ; // Rosa queimado
+      color: #fff;
 
-      &[aria-label="Excluir tarefa"] {
-        border-color: #e74c3c;
-        color: #e74c3c;
-
-        &:hover {
-          background-color: #e74c3c;
-          color: #fff;
-        }
+      &:hover {
+        background-color: #d11a1a;
       }
     }
   }
@@ -101,69 +108,45 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 
     label {
       font-weight: 600;
-      color: #444;
-      min-width: 50px;
+      color: #555;
     }
 
     select {
       flex-grow: 1;
       padding: 6px 10px;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1.5px solid #ccc;
       font-size: 1rem;
       transition: border-color 0.3s ease;
 
       &:focus {
-        border-color: #27ae60;
+        border-color: #7d6aa0;
         outline: none;
       }
     }
 
     button {
-      padding: 8px 14px;
-      border: none;
-      background-color: #27ae60;
-      border-radius: 4px;
-      color: white;
-      font-weight: 700;
+      padding: 8px 16px;
+      background-color: #80c19b; 
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      width: 100%;
       cursor: pointer;
+      margin-top: 5px;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #1e8449;
+        background-color: #589f75;
       }
 
       &:focus {
-        outline: 2px solid #1e8449;
+        outline: 2px solid #6ab187;
         outline-offset: 2px;
-      }
-    }
-  }
-
-  // Responsividade para telas pequenas
-  @media (max-width: 480px) {
-    dl {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .tarefa__acoes {
-      flex-direction: column;
-
-      button {
-        width: 100%;
-      }
-    }
-
-    .tarefa__status {
-      flex-direction: column;
-
-      select,
-      button {
-        width: 100%;
       }
     }
   }

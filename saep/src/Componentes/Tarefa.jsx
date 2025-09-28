@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDraggable } from "@dnd-kit/core";
+import { GripVertical } from "lucide-react"; // ou qualquer ícone de alça
 
 export function Tarefa({ tarefa }) {
   const navigate = useNavigate();
@@ -43,19 +44,19 @@ export function Tarefa({ tarefa }) {
   }
 
   return (
-    <article
-      className="tarefa"
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-    >
+    <article className="tarefa" ref={setNodeRef} style={style}>
+      {/* Alça de arrasto */}
+      <div className="drag-handle" {...listeners} {...attributes}>
+        <GripVertical size={18} style={{ cursor: "grab" }} />
+      </div>
+
       <header>
         <h3 id={`tarefa-${tarefa.id}`}>{tarefa.descricao}</h3>
       </header>
+
       <dl>
         <dt>Setor:</dt>
-        <dd>{tarefa.nomeSetor}</dd> {/* corrigido de setor para nomeSetor */}
+        <dd>{tarefa.nomeSetor}</dd>
         <dt>Prioridade:</dt>
         <dd>{tarefa.prioridade}</dd>
       </dl>
@@ -65,17 +66,13 @@ export function Tarefa({ tarefa }) {
           Editar
         </button>
 
-        <button
-          type="button"
-          aria-label="Excluir tarefa"
-          onClick={() => excluirTarefa(tarefa.id)}
-        >
+        <button type="button" onClick={() => excluirTarefa(tarefa.id)}>
           Excluir
         </button>
       </div>
 
       <form className="tarefa__status" onSubmit={alterarStatus}>
-        <label>Status:</label>
+        <label htmlFor={`status-${tarefa.id}`}>Status:</label>
         <select
           id={`status-${tarefa.id}`}
           name="status"

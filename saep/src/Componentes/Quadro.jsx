@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Não se esqueça de importar o axios
+import axios from 'axios'; 
 import { Coluna } from './Coluna';
 //area que permite o uso do Drag and drop
 import { DndContext } from '@dnd-kit/core';
@@ -10,7 +10,6 @@ export function Quadro() {
     useEffect(() => {
 
         const apiUrl = 'http://127.0.0.1:8000/api/tarefa/';
-
 
         axios.get(apiUrl)
             .then(response => {
@@ -26,7 +25,7 @@ export function Quadro() {
 
     if(over && active){
         const tarefaId = active.id;
-        const novaColuna = over.id; // onde ela foi solta
+        const novaColuna = over.id;
 
         setTarefas(prev =>
             prev.map(tarefa =>
@@ -39,8 +38,6 @@ export function Quadro() {
         }).catch(err => console.error("Erro ao atualizar tarefa", err));
     }
 }
-
-
 
     const tarefasAFazer = tarefas.filter(tarefa => tarefa.status === 'a fazer');
     const tarefasFazendo = tarefas.filter(tarefa => tarefa.status === 'fazendo');

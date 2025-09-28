@@ -4,59 +4,72 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 
+// Schema com validações de conteúdo
 const schemaCadTarefa = z.object({
   descricao: z.string()
-    .min(1, "Informe uma descrição")
-    .max(100, "Informe no máximo 100 caracteres"),
+    .min(10, "A descrição deve ter pelo menos 10 caracteres")
+    .max(100, "A descrição deve ter no máximo 100 caracteres")
+    .refine((val) => /\p{L}/u.test(val), {
+      message: "A descrição deve conter letras",
+    }),
+
   setor: z.string()
-    .min(1, "Informe um setor")
-    .max(50, "Informe no máximo 50 caracteres"),
+    .min(3, "O nome do setor deve ter pelo menos 3 caracteres")
+    .max(50, "O nome do setor deve ter no máximo 50 caracteres")
+    .refine((val) => /\p{L}/u.test(val), {
+      message: "O nome do setor deve conter letras",
+    }),
+
   prioridade: z.enum(["baixa", "media", "alta"], {
-    errorMap: () => ({ message: "Escolha Baixa, Média ou Alta" })
+    errorMap: () => ({ message: "Escolha Baixa, Média ou Alta" }),
   }),
-  idUsuario: z.string().min(1, "Selecione um usuário válido")
+
+  idUsuario: z.string()
+    .min(1, "Selecione um usuário válido"),
 });
 
 export function CadastroTarefa() {
   const [usuarios, setUsuarios] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm({
-    resolver: zodResolver(schemaCadTarefa)
+    resolver: zodResolver(schemaCadTarefa),
   });
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/usuario/")
+    axios
+      .get("http://127.0.0.1:8000/api/usuario/")
       .then((res) => {
-        console.log("Usuários carregados:", res.data);
         setUsuarios(res.data);
       })
-      .catch((err) => console.error("Erro ao buscar usuários:", err));
+      .catch((err) => {
+        console.error("Erro ao buscar usuários:", err);
+        alert("Erro ao carregar a lista de usuários.");
+      });
   }, []);
 
   async function obterDados(data) {
-    console.log("Dados do formulário recebidos:", data);
+    setSubmitting(true);
 
     const usuarioId = parseInt(data.idUsuario);
-    console.log("idUsuario convertido para número:", usuarioId);
 
     if (isNaN(usuarioId)) {
       alert("Selecione um usuário válido");
+      setSubmitting(false);
       return;
     }
 
-    const prioridade = data.prioridade.toLowerCase();
-
     const payload = {
-      descricao: data.descricao,
-      nomeSetor: data.setor,
-      prioridade: prioridade,
+      descricao: data.descricao.trim(),
+      nomeSetor: data.setor.trim(),
+      prioridade: data.prioridade.toLowerCase(),
       idUsuario: usuarioId,
-      status: 'a fazer'
+      status: "a fazer",
     };
 
     try {
@@ -65,7 +78,9 @@ export function CadastroTarefa() {
       reset();
     } catch (err) {
       console.error("Erro ao cadastrar tarefa:", err.response?.data || err);
-      alert("Erro ao cadastrar tarefa");
+      alert(err.response?.data?.detail || "Erro ao cadastrar tarefa");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -74,16 +89,33 @@ export function CadastroTarefa() {
       <h2>Cadastro de Tarefa</h2>
       <form onSubmit={handleSubmit(obterDados)}>
 
-        <label>Descrição:</label>
-        <textarea {...register("descricao")} />
+        <label htmlFor="descricao">Descrição:</label>
+        <textarea
+          id="descricao"
+          placeholder="Descreva a tarefa com no mínimo 10 caracteres"
+          maxLength={100}
+          className={errors.descricao ? "error" : ""}
+          {...register("descricao")}
+        />
         {errors.descricao && <p>{errors.descricao.message}</p>}
 
-        <label>Setor:</label>
-        <input type="text" {...register("setor")} />
+        <label htmlFor="setor">Setor:</label>
+        <input
+          id="setor"
+          type="text"
+          placeholder="Ex: Recursos Humanos"
+          maxLength={50}
+          className={errors.setor ? "error" : ""}
+          {...register("setor")}
+        />
         {errors.setor && <p>{errors.setor.message}</p>}
 
-        <label>Prioridade:</label>
-        <select {...register("prioridade")}>
+        <label htmlFor="prioridade">Prioridade:</label>
+        <select
+          id="prioridade"
+          className={errors.prioridade ? "error" : ""}
+          {...register("prioridade")}
+        >
           <option value="">Selecione</option>
           <option value="baixa">Baixa</option>
           <option value="media">Média</option>
@@ -91,23 +123,25 @@ export function CadastroTarefa() {
         </select>
         {errors.prioridade && <p>{errors.prioridade.message}</p>}
 
-        <label>Usuário:</label>
+        <label htmlFor="idUsuario">Usuário:</label>
         <select
-          {...register("idUsuario")}
+          id="idUsuario"
           defaultValue=""
-          name="idUsuario"
-          onChange={(e) => console.log("Usuário selecionado:", e.target.value)}
+          className={errors.idUsuario ? "error" : ""}
+          {...register("idUsuario")}
         >
           <option value="">Selecione um usuário</option>
           {usuarios.map((u) => (
-            <option key={u.id ?? Math.random()} value={String(u.id)}>
+            <option key={u.id} value={String(u.id)}>
               {u.nome}
             </option>
           ))}
         </select>
         {errors.idUsuario && <p>{errors.idUsuario.message}</p>}
 
-        <button type="submit">Cadastrar</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Enviando..." : "Cadastrar"}
+        </button>
       </form>
     </section>
   );

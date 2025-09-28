@@ -2,58 +2,82 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import { useState } from 'react';
 
-// Define the validation schema using zod
 const schemaCadUsuario = z.object({
   nome: z.string()
-    .min(1, "Informe ao menos um valor")
-    .max(50, "Informe no máximo 50 caracteres"), 
+    .min(5, "O nome deve ter pelo menos 5 caracteres")
+    .max(50, "O nome deve ter no máximo 50 caracteres")
+    .refine(val => /\p{L}/u.test(val), {
+      message: "O nome deve conter letras",
+    })
+    .refine(val => !/(.)\1{3,}/.test(val), {
+      message: "O nome não pode conter letras repetidas em excesso",
+    }),
+
   email: z.string()
-    .min(1, "Informe ao menos um valor")
-    .max(50, "Informe até 50 caracteres")
-    .email("Formato de email inválido"),
+    .min(1, "Informe o e-mail")
+    .max(50, "O e-mail deve ter no máximo 50 caracteres")
+    .email("Formato de e-mail inválido"),
 });
 
 export function CadastroUsuario() {
+  const [submitting, setSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset
   } = useForm({
-    resolver: zodResolver(schemaCadUsuario) 
+    resolver: zodResolver(schemaCadUsuario)
   });
 
-  // Function to handle the form submission
   async function obterDados(data) {
+    setSubmitting(true);
     try {
-      console.log('dados recebidos', data);
-      // Sending data to backend
+      console.log('Dados recebidos:', data);
       await axios.post("http://127.0.0.1:8000/api/usuario/", data);
       alert("Usuário cadastrado com sucesso!");
       reset();
     } catch (err) {
-      console.error("Erro ao cadastrar usuario:", err.response?.data || err);
-      alert("Erro ao cadastrar usuario");
+      console.error("Erro ao cadastrar usuário:", err.response?.data || err);
+      alert(err.response?.data?.detail || "Erro ao cadastrar usuário");
+    } finally {
+      setSubmitting(false);
     }
   }
-
-  
 
   return (
     <section className="formulario">
       <h2>Cadastro de Usuário</h2>
       <form onSubmit={handleSubmit(obterDados)}>
-        
-        <label>Nome:</label>
-        <input type="text" {...register("nome")} placeholder='Nome Sobrenome'/>
+
+        <label htmlFor="nome">Nome:</label>
+        <input
+          id="nome"
+          type="text"
+          placeholder="Nome e sobrenome"
+          maxLength={50}
+          className={errors.nome ? "error" : ""}
+          {...register("nome")}
+        />
         {errors.nome && <p>{errors.nome.message}</p>}
 
-        <label>Email:</label>
-        <input type="email" {...register("email")} placeholder='email@dominio.com' />
+        <label htmlFor="email">Email:</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="email@dominio.com"
+          maxLength={50}
+          className={errors.email ? "error" : ""}
+          {...register("email")}
+        />
         {errors.email && <p>{errors.email.message}</p>}
 
-        <button type="submit">Cadastrar</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Enviando..." : "Cadastrar"}
+        </button>
       </form>
     </section>
   );
