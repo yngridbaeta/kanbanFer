@@ -7,9 +7,24 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // 🧪 Validação com Zod
 const schemaEditarTarefa = z.object({
+  descricao: z.string()
+    .min(10, "A descrição deve ter pelo menos 10 caracteres")
+    .max(100, "A descrição deve ter no máximo 100 caracteres")
+    .refine((val) => /\p{L}/u.test(val), {
+      message: "A descrição deve conter letras",
+    }),
+
+  setor: z.string()
+    .min(3, "O nome do setor deve ter pelo menos 3 caracteres")
+    .max(50, "O nome do setor deve ter no máximo 50 caracteres")
+    .refine((val) => /\p{L}/u.test(val), {
+      message: "O nome do setor deve conter letras",
+    }),
+
   prioridade: z.enum(["baixa", "media", "alta"], {
     errorMap: () => ({ message: "Escolha baixa, média ou alta" }),
   }),
+
   status: z.enum(["a fazer", "fazendo", "pronto"], {
     errorMap: () => ({ message: "Escolha um status válido" }),
   }),
@@ -37,8 +52,9 @@ export function EditarTarefa() {
         console.log("🔄 Tarefa carregada:", res.data);
         setTarefa(res.data);
 
-        // Define valores iniciais do formulário
         reset({
+          descricao: res.data.descricao,
+          setor: res.data.nomeSetor,
           prioridade: res.data.prioridade.toLowerCase(),
           status: res.data.status.toLowerCase(),
         });
@@ -48,8 +64,15 @@ export function EditarTarefa() {
 
   // 💾 Salvar alterações
   async function salvarEdicao(data) {
+    const payload = {
+      descricao: data.descricao.trim(),
+      nomeSetor: data.setor.trim(),
+      prioridade: data.prioridade,
+      status: data.status,
+    };
+
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/tarefa/${id}/`, data);
+      await axios.patch(`http://127.0.0.1:8000/api/tarefa/${id}/`, payload);
       alert("Tarefa atualizada com sucesso!");
       navigate("/");
     } catch (err) {
@@ -64,21 +87,33 @@ export function EditarTarefa() {
     <section className="formulario">
       <h2>Edição de Tarefa</h2>
       <form onSubmit={handleSubmit(salvarEdicao)}>
+
         {/* Descrição */}
-        <label>Descrição:</label>
-        <textarea value={tarefa.descricao || ""} readOnly />
+        <label htmlFor="descricao">Descrição:</label>
+        <textarea
+          id="descricao"
+          maxLength={100}
+          {...register("descricao")}
+        />
+        {errors.descricao && (
+          <p style={{ color: "red" }}>{errors.descricao.message}</p>
+        )}
 
         {/* Setor */}
-        <label>Setor:</label>
-        <input type="text" value={tarefa.nomeSetor || ""} readOnly />
-
-        {/* Data */}
-        <label>Data de Cadastro:</label>
-        <input type="text" value={tarefa.data || ""} readOnly />
+        <label htmlFor="setor">Setor:</label>
+        <input
+          id="setor"
+          type="text"
+          maxLength={50}
+          {...register("setor")}
+        />
+        {errors.setor && (
+          <p style={{ color: "red" }}>{errors.setor.message}</p>
+        )}
 
         {/* Prioridade */}
-        <label>Prioridade:</label>
-        <select {...register("prioridade")}>
+        <label htmlFor="prioridade">Prioridade:</label>
+        <select id="prioridade" {...register("prioridade")}>
           <option value="">Selecione</option>
           <option value="baixa">Baixa</option>
           <option value="media">Média</option>
@@ -89,8 +124,8 @@ export function EditarTarefa() {
         )}
 
         {/* Status */}
-        <label>Status:</label>
-        <select {...register("status")}>
+        <label htmlFor="status">Status:</label>
+        <select id="status" {...register("status")}>
           <option value="">Selecione</option>
           <option value="a fazer">A fazer</option>
           <option value="fazendo">Fazendo</option>
@@ -100,7 +135,6 @@ export function EditarTarefa() {
           <p style={{ color: "red" }}>{errors.status.message}</p>
         )}
 
-        {/* Botão */}
         <button type="submit">Salvar</button>
       </form>
     </section>
