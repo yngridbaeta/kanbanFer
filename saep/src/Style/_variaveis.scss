@@ -1,14 +1,17 @@
-$back: #fff8f9;             // fundo rosa clarinho bem suave
-$primary: #a67395;          // marrom rosado delicado para textos principais
-$secondary: #c6a4a4;        // rosa pastel suave para detalhes e bordas
-$accent: #b39ddb;           // lavanda pastel para destaques e botões
-$text-dark: #5c4b51;        // marrom escuro suave para textos
-$text-light: #f1f1f1;       // rosa quase branco para fundos e textos claros
-$font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-$button: #dbcfd4;           // rosa pastel claro para botões
-$borda-arredondada: 8px;
-$font-cabecalho: 18px;
+$back: #fef7f9;              // fundo claro, mais próximo do branco
+$primary: #7b4c5e;           // rosa queimado escuro, bom contraste com fundo claro
+$secondary: #a47a7a;         // rosa pastel com mais contraste (substitui o #c6a4a4)
+$accent: #9575cd;            // lavanda acessível (mantém delicadeza e visibilidade)
+$text-dark: #3a2c2f;         // marrom escuro com excelente contraste
+$text-light: #fafafa;        // branco levemente acinzentado (usado em texto sobre botões escuros)
+$button: #baa1b6;            // rosa claro com contraste suficiente sobre branco
+$button-hover: #a188a6;      // tom mais escuro para hover
 
+// Outras variáveis
+
+$font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-cabecalho: 18px;
+$borda-arredondada: 8px;
 *{
     margin:0;
     padding: 0;

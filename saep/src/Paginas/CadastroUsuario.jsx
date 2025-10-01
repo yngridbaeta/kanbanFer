@@ -51,33 +51,56 @@ export function CadastroUsuario() {
   return (
     <section className="formulario">
       <h2>Cadastro de Usuário</h2>
-      <form onSubmit={handleSubmit(obterDados)}>
 
+      <form onSubmit={handleSubmit(obterDados)} aria-label="Formulário de cadastro de usuário">
+
+        {/* Campo Nome */}
         <label htmlFor="nome">Nome:</label>
         <input
           id="nome"
+          name="nome"
           type="text"
           placeholder="Nome e sobrenome"
           maxLength={50}
+          aria-required="true"
+          aria-invalid={!!errors.nome}
           className={errors.nome ? "error" : ""}
           {...register("nome")}
         />
-        {errors.nome && <p>{errors.nome.message}</p>}
+        {errors.nome && (
+          <p role="alert" aria-live="assertive" style={{ color: "red" }}>
+            {errors.nome.message}
+          </p>
+        )}
 
+        {/* Campo Email */}
         <label htmlFor="email">Email:</label>
         <input
           id="email"
+          name="email"
           type="email"
           placeholder="email@dominio.com"
           maxLength={50}
+          aria-required="true"
+          aria-invalid={!!errors.email}
           className={errors.email ? "error" : ""}
           {...register("email")}
         />
-        {errors.email && <p>{errors.email.message}</p>}
+        {errors.email && (
+          <p role="alert" aria-live="assertive" style={{ color: "red" }}>
+            {errors.email.message}
+          </p>
+        )}
 
-        <button type="submit" disabled={submitting}>
+        {/* Botão */}
+        <button
+          type="submit"
+          disabled={submitting}
+          aria-label="Enviar dados do formulário de cadastro"
+        >
           {submitting ? "Enviando..." : "Cadastrar"}
         </button>
+
       </form>
     </section>
   );

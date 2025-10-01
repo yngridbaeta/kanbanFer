@@ -44,14 +44,11 @@ export function EditarTarefa() {
     resolver: zodResolver(schemaEditarTarefa),
   });
 
-  // 🔁 Carrega a tarefa
   useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/api/tarefa/${id}/`)
       .then((res) => {
-        console.log("🔄 Tarefa carregada:", res.data);
         setTarefa(res.data);
-
         reset({
           descricao: res.data.descricao,
           setor: res.data.nomeSetor,
@@ -62,7 +59,6 @@ export function EditarTarefa() {
       .catch((err) => console.error("Erro ao buscar tarefa:", err));
   }, [id, reset]);
 
-  // 💾 Salvar alterações
   async function salvarEdicao(data) {
     const payload = {
       descricao: data.descricao.trim(),
@@ -84,19 +80,27 @@ export function EditarTarefa() {
   if (!tarefa) return <p>Carregando...</p>;
 
   return (
-    <section className="formulario">
-      <h2>Edição de Tarefa</h2>
-      <form onSubmit={handleSubmit(salvarEdicao)}>
+    <section className="formulario" aria-labelledby="titulo-edicao">
+      <h2 id="titulo-edicao">Edição de Tarefa</h2>
+
+      <form onSubmit={handleSubmit(salvarEdicao)} aria-describedby="descricao-form">
+        <p id="descricao-form" className="sr-only">
+          Preencha os campos para editar a tarefa.
+        </p>
 
         {/* Descrição */}
         <label htmlFor="descricao">Descrição:</label>
         <textarea
           id="descricao"
           maxLength={100}
+          required
+          aria-invalid={!!errors.descricao}
           {...register("descricao")}
         />
         {errors.descricao && (
-          <p style={{ color: "red" }}>{errors.descricao.message}</p>
+          <p role="alert" aria-live="assertive" style={{ color: "#b00020" }}>
+            {errors.descricao.message}
+          </p>
         )}
 
         {/* Setor */}
@@ -105,37 +109,58 @@ export function EditarTarefa() {
           id="setor"
           type="text"
           maxLength={50}
+          required
+          aria-invalid={!!errors.setor}
           {...register("setor")}
         />
         {errors.setor && (
-          <p style={{ color: "red" }}>{errors.setor.message}</p>
+          <p role="alert" aria-live="assertive" style={{ color: "#b00020" }}>
+            {errors.setor.message}
+          </p>
         )}
 
         {/* Prioridade */}
         <label htmlFor="prioridade">Prioridade:</label>
-        <select id="prioridade" {...register("prioridade")}>
+        <select
+          id="prioridade"
+          required
+          aria-invalid={!!errors.prioridade}
+          {...register("prioridade")}
+        >
           <option value="">Selecione</option>
           <option value="baixa">Baixa</option>
           <option value="media">Média</option>
           <option value="alta">Alta</option>
         </select>
         {errors.prioridade && (
-          <p style={{ color: "red" }}>{errors.prioridade.message}</p>
+          <p role="alert" aria-live="assertive" style={{ color: "#b00020" }}>
+            {errors.prioridade.message}
+          </p>
         )}
 
         {/* Status */}
         <label htmlFor="status">Status:</label>
-        <select id="status" {...register("status")}>
+        <select
+          id="status"
+          required
+          aria-invalid={!!errors.status}
+          {...register("status")}
+        >
           <option value="">Selecione</option>
           <option value="a fazer">A fazer</option>
           <option value="fazendo">Fazendo</option>
           <option value="pronto">Pronto</option>
         </select>
         {errors.status && (
-          <p style={{ color: "red" }}>{errors.status.message}</p>
+          <p role="alert" aria-live="assertive" style={{ color: "#b00020" }}>
+            {errors.status.message}
+          </p>
         )}
 
-        <button type="submit">Salvar</button>
+        {/* Botão */}
+        <button type="submit" aria-label="Salvar alterações da tarefa">
+          Salvar
+        </button>
       </form>
     </section>
   );
