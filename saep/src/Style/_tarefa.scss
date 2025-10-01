@@ -11,15 +11,15 @@
   border-left: 6px solid transparent;
 
   &.status-a\ fazer {
-    border-left-color: #ff6b6b; // Rosa com contraste melhor
+    border-left-color: #ff6b6b; 
   }
 
   &.status-fazendo {
-    border-left-color: #f7c948; // Amarelo acessível
+    border-left-color: #f7c948; 
   }
 
   &.status-pronto {
-    border-left-color: #2ecc71; // Verde acessível
+    border-left-color: #2ecc71; 
   }
 
   &:active {
@@ -33,7 +33,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    color: #333; // contraste melhorado
+    color: #333;
     font-size: 1.2rem;
   }
 
@@ -43,7 +43,7 @@
     h3 {
       font-size: 1.2rem;
       font-weight: 600;
-      color: #1a1a1a; // texto escuro e acessível
+      color: #1a1a1a; 
       margin-left: 24px;
       word-break: break-word;
     }
@@ -87,7 +87,7 @@
     }
 
     button:first-of-type {
-      background-color: #6a1b9a; // Roxo escuro
+      background-color: #6a1b9a; 
       color: #fff;
 
       &:hover {
@@ -101,7 +101,7 @@
     }
 
     button:last-of-type {
-      background-color: #c62828; // Vermelho mais escuro
+      background-color: #c62828; 
       color: #fff;
 
       &:hover {
