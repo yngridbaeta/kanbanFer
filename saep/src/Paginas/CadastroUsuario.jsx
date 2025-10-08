@@ -6,20 +6,25 @@ import { useState } from 'react';
 
 const schemaCadUsuario = z.object({
   nome: z.string()
+    .trim() // aplica trim antes das validações
     .min(5, "O nome deve ter pelo menos 5 caracteres")
     .max(50, "O nome deve ter no máximo 50 caracteres")
     .refine(val => /\p{L}/u.test(val), {
       message: "O nome deve conter letras",
     })
+    .refine(val => !/\d/.test(val), {
+      message: "O nome não pode conter números",
+    })
     .refine(val => !/(.)\1{3,}/.test(val), {
       message: "O nome não pode conter letras repetidas em excesso",
     }),
-
   email: z.string()
+    .trim()
     .min(1, "Informe o e-mail")
     .max(50, "O e-mail deve ter no máximo 50 caracteres")
     .email("Formato de e-mail inválido"),
 });
+
 
 export function CadastroUsuario() {
   const [submitting, setSubmitting] = useState(false);
@@ -52,7 +57,7 @@ export function CadastroUsuario() {
     <section className="formulario">
       <h2>Cadastro de Usuário</h2>
 
-      <form onSubmit={handleSubmit(obterDados)} aria-label="Formulário de cadastro de usuário">
+    <form onSubmit={handleSubmit(obterDados)} noValidate aria-label="Formulário de cadastro de usuário">
 
         {/* Campo Nome */}
         <label htmlFor="nome">Nome:</label>
