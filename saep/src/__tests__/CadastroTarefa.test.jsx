@@ -9,7 +9,7 @@ import { CadastroTarefa } from '../Paginas/CadastroTarefa';
 vi.mock('axios');
 
 beforeAll(() => {
-  vi.spyOn(window, 'alert').mockImplementation(() => {});
+  vi.spyOn(window, 'alert').mockImplementation(() => { });
 });
 
 const usuariosMock = [
@@ -17,13 +17,6 @@ const usuariosMock = [
   { id: 2, nome: 'Maria' },
 ];
 
-const prepararRender = async () => {
-    axios.get.mockResolvedValueOnce({ data: usuariosMock });
-    render(<CadastroTarefa />);
-    await waitFor(() => {
-      expect(screen.getByRole('option', { name: /Usuário 1/i })).toBeInTheDocument();
-    });
-  };
 
 beforeEach(() => {
   axios.get.mockResolvedValue({ data: usuariosMock });
@@ -130,9 +123,8 @@ describe('CadastroTarefa - Testes completos', () => {
     // Zod não valida o ID contra a lista, então o form passa, alert será chamado
   });
 
- //11. Resetar formulário
- it('11. Deve resetar formulário após cadastro bem-sucedido', async () => {
-    // Mocka o GET que busca os usuários para popular o select
+  //11. Resetar formulário
+  it('11. Deve resetar formulário após cadastro bem-sucedido', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { id: '1', nome: 'Usuário 1' },
@@ -187,7 +179,7 @@ describe('CadastroTarefa - Testes completos', () => {
       target: { value: 'TIS' },
     });
     fireEvent.change(screen.getByLabelText(/Usuário/i), {
-      target: { value: '2' },  // Atenção: string!
+      target: { value: '2' },  
     });
 
     fireEvent.click(screen.getByRole('button'));
@@ -195,216 +187,197 @@ describe('CadastroTarefa - Testes completos', () => {
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
   });
 
-  //13. Descrição 100 caracteres
-  // it('13. Deve aceitar descrição com exatamente 100 caracteres', async () => {
-  //   await prepararRender();
-  //   axios.post.mockResolvedValueOnce({ data: {} });
+  it('13. Deve aceitar descrição com exatamente 100 caracteres', async () => {
+    axios.get.mockResolvedValueOnce({ data: usuariosMock });
+    axios.post.mockResolvedValueOnce({ data: {} });
 
-  //   const desc = 'A'.repeat(100);
-  //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: desc } });
-  //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-  //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+    render(<CadastroTarefa />);
 
-  //   fireEvent.click(screen.getByRole('button'));
-  //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-  // });
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /João/i })).toBeInTheDocument();
+    });
 
-        
-        // 13. Descrição com exatamente 100 caracteres
-        // it('13. Deve aceitar descrição com exatamente 100 caracteres', async () => {
-          //   axios.post.mockResolvedValueOnce({ data: {} });
-          //   render(<CadastroTarefa />);
-          //   const desc = 'A'.repeat(100);
-          //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: desc } });
-          //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-          //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-          //   fireEvent.click(screen.getByRole('button'));
-          //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-          // });
-          
-          // 14. Setor com exatamente 3 caracteres
-          // it('14. Deve aceitar setor com exatamente 3 caracteres', async () => {
-            //   axios.post.mockResolvedValueOnce({ data: {} });
-            //   render(<CadastroTarefa />);
-            //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição válida' } });
-            //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'ABC' } });
-            //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-            //   fireEvent.click(screen.getByRole('button'));
-            //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-            // });
-            
-            // 15. Setor com exatamente 50 caracteres
-            // it('15. Deve aceitar setor com exatamente 50 caracteres', async () => {
-              //   axios.post.mockResolvedValueOnce({ data: {} });
-              //   render(<CadastroTarefa />);
-              //   const setor50 = 'A'.repeat(50);
-              //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição válida' } });
-              //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: setor50 } });
-              //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-              //   fireEvent.click(screen.getByRole('button'));
-              //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-              // });
-              
-              // 16. Setor com espaços
-              // it('16. Deve aceitar setor com espaços', async () => {
-                //   axios.post.mockResolvedValueOnce({ data: {} });
-                //   render(<CadastroTarefa />);
-                //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição válida' } });
-                //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'Recursos Humanos' } });
-                //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '2' } });
-                //   fireEvent.click(screen.getByRole('button'));
-                //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-                // });
-                
-                // 17. Seleção de diferentes prioridades
-                // it('17. Deve aceitar todas as prioridades válidas', async () => {
-                  //   axios.post.mockResolvedValue({ data: {} });
-                  //   render(<CadastroTarefa />);
-                  //   const prioridades = ['baixa','media','alta'];
-                  //   for (const p of prioridades) {
-                    //     fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
-                    //     fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                    //     fireEvent.change(screen.getByLabelText(/Prioridade/i), { target: { value: p } });
-                    //     fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                    //     fireEvent.click(screen.getByRole('button'));
-                    //     await waitFor(() => expect(axios.post).toHaveBeenCalled());
-                    //   }
-                    // });
-                    
-                    
-                    // // 19. Prioridade default
-                    // it('19. Deve usar prioridade baixa como default', async () => {
-                      //   axios.post.mockResolvedValueOnce({ data: {} });
-                      //   render(<CadastroTarefa />);
-                      //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
-                      //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                      //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                      //   fireEvent.click(screen.getByRole('button'));
-                      //   await waitFor(() => {
-                        //     expect(axios.post).toHaveBeenCalledWith(
-                          //       expect.objectContaining({ prioridade: 'baixa' })
-                          //     );
-                          //   });
-                          // });
-                          
-                          // // 20. Submissão múltipla não trava botão
-                          // it('20. Botão desativa corretamente enquanto envia', async () => {
-                            //   axios.post.mockImplementation(() => new Promise(r => setTimeout(() => r({ data: {} }), 100)));
-                            //   render(<CadastroTarefa />);
-                            //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
-                            //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                            //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                            //   const btn = screen.getByRole('button');
-                            //   fireEvent.click(btn);
-                            //   expect(btn).toBeDisabled();
-                            // });
-                            
-                            // // 21. Alerta de sucesso
-                            // it('21. Deve chamar alert após cadastro bem-sucedido', async () => {
-                              //   axios.post.mockResolvedValueOnce({ data: {} });
-                              //   render(<CadastroTarefa />);
-                              //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa alerta' } });
-                              //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                              //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                              //   fireEvent.click(screen.getByRole('button'));
-                              //   await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Tarefa cadastrada com sucesso!'));
-                              // });
-                              
-                              // // 22. Alerta de erro
-                              // it('22. Deve chamar alert em erro de cadastro', async () => {
-                                //   axios.post.mockRejectedValueOnce({ response: { data: { detail: 'Erro teste' } } });
-                                //   render(<CadastroTarefa />);
-                                //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa alerta' } });
-                                //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                                //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                                //   fireEvent.click(screen.getByRole('button'));
-                                //   await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Erro teste'));
-                                // });
-                                
-                                // // 23. Remover espaços das strings
-                                // it('23. Deve trimar descrição e setor antes de enviar', async () => {
-                                  //   axios.post.mockResolvedValueOnce({ data: {} });
-                                  //   render(<CadastroTarefa />);
-                                  //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: '  Descrição com espaços  ' } });
-                                  //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: '  TI  ' } });
-                                  //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                                  //   fireEvent.click(screen.getByRole('button'));
-                                  //   await waitFor(() => expect(axios.post).toHaveBeenCalledWith(
-                                    //     expect.objectContaining({ descricao: 'Descrição com espaços', setor: 'TI' })
-                                    //   ));
-                                    // });
-                                    
-                                    //   // 24. Testar diferentes usuários
-                                    //   it('24. Deve permitir cadastrar para diferentes usuários', async () => {
-                                      //     axios.post.mockResolvedValue({ data: {} });
-                                      //     render(<CadastroTarefa />);
-                                      //     for (const u of usuariosMock) {
-                                        //       fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
-                                        //       fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                                        //       fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: String(u.id) } });
-                                        //       fireEvent.click(screen.getByRole('button'));
-                                        //       await waitFor(() => expect(axios.post).toHaveBeenCalled());
-                                        //     }
-                                        //   });
-                                        
-                                        //  // 25. Testar reset e prioridade default juntas
-                                        // it('25. Deve resetar e manter prioridade default após cadastro', async () => {
-                                          //   // Mock da resposta do axios
-                                          //   axios.post.mockResolvedValueOnce({ data: {} });
-                                          
-                                          //   render(<CadastroTarefa />);
-                                          
-                                          //   const desc = screen.getByLabelText(/Descrição/i);
-                                          //   const setor = screen.getByLabelText(/Setor/i);
-                                          //   const prioridade = screen.getByLabelText(/Prioridade/i);
-                                          //   const usuario = screen.getByLabelText(/Usuário/i);
-                                          
-                                          //   // Preenche o formulário
-                                          //   fireEvent.change(desc, { target: { value: 'Tarefa teste' } });
-                                          //   fireEvent.change(setor, { target: { value: 'TI' } });
-                                          //   fireEvent.change(usuario, { target: { value: '1' } });
-                                          //   fireEvent.change(prioridade, { target: { value: 'alta' } });
-                                          
-                                          //   // Clica no botão de envio
-                                          //   fireEvent.click(screen.getByRole('button'));
-                                          
-                                          //   // Espera a chamada do axios terminar
-                                          //   await waitFor(() => expect(axios.post).toHaveBeenCalled());
-                                          
-                                          //   // Agora verifica o reset dos campos
-                                          //   await waitFor(() => {
-                                            //     expect(desc.value).toBe('');          // Descrição resetada
-                                            //     expect(setor.value).toBe('');         // Setor resetado
-                                            //     expect(usuario.value).toBe('');       // Usuário resetado
-                                            //     expect(prioridade.value).toBe('baixa'); // Prioridade default
-                                            //   });
-                                            // });
-                                            
-                                          });
-                                          
-                                          // // 11. Cadastro válido
-                                          // it('11. Deve cadastrar tarefa com dados válidos', async () => {
-                                          //   axios.post.mockResolvedValueOnce({ data: {} });
-                                          //   render(<CadastroTarefa />);
-                                            
-                                          //   fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa completa e válida' } });
-                                          //   fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
-                                          //   fireEvent.change(screen.getByLabelText(/Prioridade/i), { target: { value: 'alta' } });
-                                          //   fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
-                                        
-                                          //   fireEvent.click(screen.getByRole('button'));
-                                        
-                                          //   // Aguarda a chamada do axios.post
-                                          //   await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
-                                        
-                                          //   expect(axios.post).toHaveBeenCalledWith(
-                                          //     'http://127.0.0.1:8000/api/tarefas/',
-                                          //     {
-                                          //       descricao: 'Tarefa completa e válida',
-                                          //       setor: 'TI',
-                                          //       prioridade: 'alta',
-                                          //       usuario: 1,
-                                          //       status: 'a fazer',
-                                          //     }
-                                          //   );
-                                          // });
+    const desc = 'A'.repeat(100);
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: desc } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TIS' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+    fireEvent.click(screen.getByRole('button'));
+
+    await waitFor(() => expect(axios.post).toHaveBeenCalled());
+  });
+
+
+  it('Deve aceitar descrição com exatamente 100 caracteres', async () => {
+    axios.get.mockResolvedValueOnce({ data: usuariosMock });
+    axios.post.mockResolvedValueOnce({ data: {} });
+
+    render(<CadastroTarefa />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /João/i })).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'A'.repeat(100) } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TIS' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+    console.log('Valores preenchidos antes do submit:');
+    console.log('Descrição:', screen.getByLabelText(/Descrição/i).value);
+    console.log('Setor:', screen.getByLabelText(/Setor/i).value);
+    console.log('Usuário:', screen.getByLabelText(/Usuário/i).value);
+
+    fireEvent.click(screen.getByRole('button'));
+
+    const errorSetor = screen.queryByText(/O nome do setor deve ter pelo menos 3 caracteres/i);
+    if (errorSetor) {
+      console.log('Erro de validação:', errorSetor.textContent);
+    }
+
+    try {
+      await waitFor(() => expect(axios.post).toHaveBeenCalled());
+    } catch {
+      throw new Error('axios.post não foi chamado, possível problema na validação do formulário');
+    }
+  });
+
+
+  it('15. Deve aceitar setor com exatamente 50 caracteres', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: [{ id: 1, nome: 'Usuário 1' }, { id: 2, nome: 'Usuário 2' }]
+    });
+
+    axios.post.mockResolvedValueOnce({ data: {} });
+
+    render(<CadastroTarefa />);
+
+    // Aguarda a lista de usuários aparecer
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /Usuário 1/i })).toBeInTheDocument();
+    });
+
+    const setor50 = 'A'.repeat(50);
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição válida' } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: setor50 } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+    fireEvent.click(screen.getByRole('button'));
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+    });
+  });
+
+
+  it('16. Deve aceitar setor com espaços', async () => {
+    // Mocka a lista de usuários para popular o select
+    axios.get.mockResolvedValueOnce({
+      data: [
+        { id: 1, nome: 'João' },
+        { id: 2, nome: 'Maria' }
+      ]
+    });
+
+    axios.post.mockResolvedValueOnce({ data: {} });
+
+    render(<CadastroTarefa />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /Maria/i })).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição válida' } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'Recursos Humanos' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '2' } });
+
+    //envia o formulário
+    fireEvent.click(screen.getByRole('button'));
+
+    // aguarda que a requisição POST tenha sido feita
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+    });
+  });
+
+
+  it('17. Deve aceitar todas as prioridades válidas', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: [
+        { id: 1, nome: 'João' },
+        { id: 2, nome: 'Maria' }
+      ]
+    });
+
+    render(<CadastroTarefa />);
+
+    // Espera o select estar populado
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /João/i })).toBeInTheDocument();
+    });
+
+    const prioridades = ['baixa', 'media', 'alta'];
+
+    for (const p of prioridades) {
+      axios.post.mockResolvedValueOnce({ data: {} });
+
+      fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
+      fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TIA' } });
+      fireEvent.change(screen.getByLabelText(/Prioridade/i), { target: { value: p } });
+      fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+      fireEvent.click(screen.getByRole('button'));
+
+      //aguarda a chamada do POST acontecer para essa prioridade
+      await waitFor(() => {
+        expect(axios.post).toHaveBeenCalled();
+      });
+
+      //limpa para a próxima iteração
+      axios.post.mockClear();
+    }
+  });
+
+
+  it('18. Deve usar prioridade baixa como default', async () => {
+    axios.get.mockResolvedValueOnce({ data: usuariosMock });  // mocka o GET antes
+    axios.post.mockResolvedValueOnce({ data: {} });           // mocka o POST
+
+    render(<CadastroTarefa />);
+
+    // aguarda lista de usuários carregar
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: /João/i })).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa teste' } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TII' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+    fireEvent.click(screen.getByRole('button'));
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({ prioridade: 'baixa' }),
+      );
+    });
+  });
+
+  it('19. Deve chamar alert após cadastro bem-sucedido', async () => {
+    axios.post.mockResolvedValueOnce({ data: {} });
+
+    render(<CadastroTarefa />);
+
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Tarefa alerta' } });
+    fireEvent.change(screen.getByLabelText(/Setor/i), { target: { value: 'TI' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+
+    fireEvent.click(screen.getByRole('button'));
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('Tarefa cadastrada com sucesso!');
+    });
+  });
+});

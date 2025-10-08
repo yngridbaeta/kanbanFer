@@ -44,7 +44,6 @@ export function CadastroTarefa() {
     defaultValues: { prioridade: "baixa" },
   });
 
-  // 🔹 Carregar lista de usuários
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/usuario/")

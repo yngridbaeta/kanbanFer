@@ -124,7 +124,7 @@ describe('CadastroUsuario', () => {
     });
   });
 
-  // // 10. Inserção de espaços nos campos (nome e email)
+  // // 10. Inserção de espaços nos campos 
   it('10. Deve exibir erro ao inserir apenas espaços nos campos', async () => {
     render(<CadastroUsuario />);
     fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: '     ' } });
@@ -144,7 +144,6 @@ describe('CadastroUsuario', () => {
     
     fireEvent.click(screen.getByRole('button'));
     
-    // Debug: imprime o HTML para ver o que está renderizado
     screen.debug();
     
     await waitFor(() => {
@@ -176,7 +175,7 @@ describe('CadastroUsuario', () => {
     });
   });
 
-  // 14. Nome com quantidade mínima de caracteres (exatamente 5)
+  // 14. Nome com quantidade mínima de caracteres 
   it('14. Deve aceitar nome com exatamente 5 caracteres', async () => {
     axios.post.mockResolvedValueOnce({ data: {} });
     render(<CadastroUsuario />);
@@ -188,7 +187,7 @@ describe('CadastroUsuario', () => {
     });
   });
 
-  // 15. Nome com quantidade máxima de caracteres (exatamente 50)
+  // 15. Nome com quantidade máxima de caracteres 
   it('15. Deve aceitar nome com exatamente 50 caracteres', async () => {
     const nome50 = 'A'.repeat(50);
     axios.post.mockResolvedValueOnce({ data: {} });
